@@ -9,7 +9,7 @@
 
         // update the selected icon
         var iconSelection = $wrapper.find('.fontawesome-icon').val();
-        if(!iconSelection) { return false; }
+        if(iconSelection == '0') { $wrapper.find('.fontawesome-icon-preview').html('Preview');  return false; }
         $i.addClass(iconSelection);
 
         // update the size
@@ -31,7 +31,7 @@
           'invert'      : 'fa-inverse',
           'spinning'    : 'fa-spin',
           'flip-horizontal' : 'fa-flip-horizontal',
-          'flip-vertical' : 'fa-flip-vertical'
+          'flip-vertical'   : 'fa-flip-vertical'
         };
 
         $.each(boolBoxes, function(stub,  cssClass) {
