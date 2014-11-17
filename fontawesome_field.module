@@ -40,10 +40,10 @@ function fontawesome_field_field_widget_form(&$form, &$form_state, $field, $inst
   $required = $element['#required'];
   $item =& $items[$delta];
 
-  $key = 'fontawesome-field-' .rand(10000,99999);
+  $field_id = 'fontawesome-field-' .rand(10000,99999);
 
   $element['wrapper'] = array(
-    '#prefix' => '<div id="'. $key .'" class="font-awesome-field-admin-wrapper"><label>' . $instance['label'] . '</label>',
+    '#prefix' => '<div id="'. $field_id .'" class="font-awesome-field-admin-wrapper"><label>' . $instance['label'] . '</label>',
     '#suffix' => '</div>',
     '#process' => $process_hack,
   );
@@ -130,6 +130,18 @@ function fontawesome_field_field_widget_form(&$form, &$form_state, $field, $inst
     '#attributes' => array('class' => array('fontawesome-flip-vertical','faf-watch')),
   );
 
+  // add the #states to each field except the icon choosing field
+  foreach($field as $k => &$v) {
+    if($k != 'icon') {
+      $v['#states'] = array(
+        'invisible' => array(
+          '#' . $field_id . ' select.fontawesome-icon' => array('value' => '0'),
+        ),
+      );
+    }
+  }
+
+  // dump the fiels inside containers, add the process hack
   foreach($containers as $idx => $fields) {
     $key = 'container-' . $idx;
     $element['wrapper'][$key] = array(
