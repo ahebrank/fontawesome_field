@@ -8,7 +8,7 @@
         var $i = $('<i class="fa"></i>')
 
         // update the selected icon
-        var iconSelection = $wrapper.find('.fontawesome-icon').val();
+        var iconSelection = $wrapper.find('select.fontawesome-icon').val();
         if(iconSelection == '0') { $wrapper.find('.fontawesome-icon-preview').html('Preview');  return false; }
         $i.addClass(iconSelection);
 
