@@ -158,6 +158,12 @@ function fontawesome_field_field_widget_form(&$form, &$form_state, $field, $inst
   $element['#attached']['css'][] = drupal_get_path('module','fontawesome_field') . '/fontawesome_field.admin.css';
   $element['#attached']['js'][] = drupal_get_path('module','fontawesome_field') . '/fontawesome_field.admin.js';
 
+  // last but not least, let's see if we can use select2
+  $select2 = libraries_load('select2');
+  if($select2['loaded']) {
+    $element['#attached']['js'][] = drupal_get_path('module','fontawesome_field') . '/fontawesome_field.select2.js';
+  }
+
   return $element;
 }
 
