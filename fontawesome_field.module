@@ -57,7 +57,7 @@ function fontawesome_field_field_widget_form(&$form, &$form_state, $field, $inst
     array('icon'), array('size'), array('invert','fixed_width','border','spinning'), array('rotation'), array('flip'),
   );
 
-  $field['icon'] = array(
+  $fa_fields['icon'] = array(
     '#title' => t('Icon'),
     '#type' => 'select',
     '#default_value' => isset($item['icon']) ? $item['icon'] : null,
@@ -66,7 +66,7 @@ function fontawesome_field_field_widget_form(&$form, &$form_state, $field, $inst
     '#attributes' => array('class' => array('fontawesome-icon','faf-watch')),
   );
 
-  $field['size'] = array(
+  $fa_fields['size'] = array(
     '#title' => t('Size Adjustment'),
     '#type' => 'select',
     '#default_value' => isset($item['size']) ? $item['size'] : null,
@@ -74,35 +74,35 @@ function fontawesome_field_field_widget_form(&$form, &$form_state, $field, $inst
     '#attributes' => array('class' => array('fontawesome-size','faf-watch')),
   );
 
-  $field['invert'] = array(
+  $fa_fields['invert'] = array(
     '#title' => t('Inverse Color'),
     '#type' => 'checkbox',
     '#default_value' => isset($item['invert']) ? $item['invert'] : 0,
     '#attributes' => array('class' => array('fontawesome-invert','faf-watch')),
   );
 
-  $field['fixed_width'] = array(
+  $fa_fields['fixed_width'] = array(
     '#title' => t('Fixed Width'),
     '#type' => 'checkbox',
     '#default_value' => isset($item['fixed_width']) ? $item['fixed_width'] : 0,
     '#attributes' => array('class' => array('fontawesome-fixed-width','faf-watch')),
   );
 
-  $field['border'] = array(
+  $fa_fields['border'] = array(
     '#title' => t('Add Border'),
     '#type' => 'checkbox',
     '#default_value' => isset($item['border']) ? $item['border'] : 0,
     '#attributes' => array('class' => array('fontawesome-border','faf-watch')),
   );
 
-  $field['spinning'] = array(
+  $fa_fields['spinning'] = array(
     '#title' => t('Spin Icon'),
     '#type' => 'checkbox',
     '#default_value' => isset($item['spinning']) ? $item['spinning'] : 0,
     '#attributes' => array('class' => array('fontawesome-spinning','faf-watch')),
   );
 
-  $field['rotation'] = array(
+  $fa_fields['rotation'] = array(
     '#title' => t('Rotate Icon'),
     '#type' => 'select',
     '#default_value' => isset($item['rotation']) ? $item['rotation'] : null,
@@ -110,20 +110,20 @@ function fontawesome_field_field_widget_form(&$form, &$form_state, $field, $inst
     '#attributes' => array('class' => array('fontawesome-rotation','faf-watch')),
   );
 
-  $field['flip'] = array(
+  $fa_fields['flip'] = array(
     '#title' => t('Flip Icon'),
     '#type' => 'fieldset',
     '#process' => $process_hack,
   );
 
-  $field['flip']['flip_horizontal'] = array(
+  $fa_fields['flip']['flip_horizontal'] = array(
     '#title' => t('Horizontally'),
     '#type' => 'checkbox',
     '#default_value' => isset($item['flip_horizontal']) ? $item['flip_horizontal'] : 0,
     '#attributes' => array('class' => array('fontawesome-flip-horizontal','faf-watch')),
   );
 
-  $field['flip']['flip_vertical'] = array(
+  $fa_fields['flip']['flip_vertical'] = array(
     '#title' => t('Vertically'),
     '#type' => 'checkbox',
     '#default_value' => isset($item['flip_vertical']) ? $item['flip_vertical'] : 0,
@@ -131,7 +131,7 @@ function fontawesome_field_field_widget_form(&$form, &$form_state, $field, $inst
   );
 
   // add the #states to each field except the icon choosing field
-  foreach($field as $k => &$v) {
+  foreach($fa_fields as $k => &$v) {
     if($k != 'icon') {
       $v['#states'] = array(
         'invisible' => array(
@@ -151,7 +151,7 @@ function fontawesome_field_field_widget_form(&$form, &$form_state, $field, $inst
     );
 
     foreach($fields as $field_name) {
-      $element['wrapper'][$key][$field_name] = $field[$field_name];
+      $element['wrapper'][$key][$field_name] = $fa_fields[$field_name];
     }
   }
 
