@@ -13,10 +13,23 @@ function fontawesome_field_field_info() {
       'default_widget' => 'fontawesome_field_widget',
       'default_formatter' => 'fontawesome_field_formatter',
       'instance_settings' => array(),
+      'property_type' => 'fontawesome_field',
+      'property_callbacks' => array('fontawesome_field_property_info_callback'),
     ),
   );
 }
 
+
+function fontawesome_field_property_info_callback(&$info, $entity_type, $field, $instance, $field_type) {
+  $name = $field['field_name'];
+  $property = &$info[$entity_type]['bundles'][$instance['bundle']]['properties'][$name];
+
+  $property['getter callback'] = 'entity_metadata_field_verbatim_get';
+  $property['setter callback'] = 'entity_metadata_field_verbatim_set';
+  unset($property['query callback']);
+
+  // :TODO: set hook_property_info
+}
 
 /**
  * implemenation of hook_widget_info()
