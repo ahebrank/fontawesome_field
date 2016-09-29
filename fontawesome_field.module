@@ -1,260 +1,28 @@
 <?php
 
+/**
+ * @file
+ * Contains fontawesome_field.module..
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
 
 /**
- * implemenation of hook_field_info()
- * @return array
+ * Implements hook_help().
  */
-function fontawesome_field_field_info() {
-  return array(
-    'fontawesome_field' => array(
-      'label' => t('Font Awesome Icon'),
-      'description' => t('Field type to create a Font Awesome icon'),
-      'default_widget' => 'fontawesome_field_widget',
-      'default_formatter' => 'fontawesome_field_formatter',
-      'instance_settings' => array(),
-      'property_type' => 'fontawesome_field',
-      'property_callbacks' => array('fontawesome_field_property_info_callback'),
-    ),
-  );
-}
+function fontawesome_field_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the fontawesome_field module.
+    case 'help.page.fontawesome_field':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Icon picker field for Fontawesome') . '</p>';
+      return $output;
 
-
-function fontawesome_field_property_info_callback(&$info, $entity_type, $field, $instance, $field_type) {
-  $name = $field['field_name'];
-  $property = &$info[$entity_type]['bundles'][$instance['bundle']]['properties'][$name];
-
-  $property['getter callback'] = 'entity_metadata_field_verbatim_get';
-  $property['setter callback'] = 'entity_metadata_field_verbatim_set';
-  unset($property['query callback']);
-
-  // :TODO: set hook_property_info
-}
-
-/**
- * implemenation of hook_widget_info()
- * @return array
- */
-function fontawesome_field_field_widget_info() {
-  $widgets = array();
-
-  $widgets['fontawesome_field_widget'] = array(
-    'label' => t('Default'),
-    'field types' => array('fontawesome_field'),
-  );
-
-  return $widgets;
-}
-
-
-function fontawesome_field_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
-  $process_hack = array('fontawesome_field_ignore_parent');
-
-  $required = $element['#required'];
-  $item =& $items[$delta];
-
-  $field_id = 'fontawesome-field-' .rand(10000,99999);
-
-  $element['wrapper'] = array(
-    '#prefix' => '<div id="'. $field_id .'" class="font-awesome-field-admin-wrapper"><label>' . $instance['label'] . '</label>',
-    '#suffix' => '</div>',
-    '#process' => $process_hack,
-  );
-
-  $element['wrapper']['preview'] = array(
-    '#prefix' => '<div class="container"><div class="fontawesome-icon-preview"><p>Preview</p>',
-    '#suffix' => '</div></div>',
-  );
-
-  $containers = array(
-    array('icon'), array('size'), array('invert','fixed_width','border','spinning'), array('rotation'), array('flip'),
-  );
-
-  $fa_fields['icon'] = array(
-    '#title' => t('Icon'),
-    '#type' => 'select',
-    '#default_value' => isset($item['icon']) ? $item['icon'] : null,
-    '#options' => fontawesome_field_get_option_list('icons'),
-    '#required' => $required,
-    '#attributes' => array('class' => array('fontawesome-icon','faf-watch')),
-  );
-
-  $fa_fields['size'] = array(
-    '#title' => t('Size Adjustment'),
-    '#type' => 'select',
-    '#default_value' => isset($item['size']) ? $item['size'] : null,
-    '#options' => fontawesome_field_get_option_list('modifiers','size'),
-    '#attributes' => array('class' => array('fontawesome-size','faf-watch')),
-  );
-
-  $fa_fields['invert'] = array(
-    '#title' => t('Inverse Color'),
-    '#type' => 'checkbox',
-    '#default_value' => isset($item['invert']) ? $item['invert'] : 0,
-    '#attributes' => array('class' => array('fontawesome-invert','faf-watch')),
-  );
-
-  $fa_fields['fixed_width'] = array(
-    '#title' => t('Fixed Width'),
-    '#type' => 'checkbox',
-    '#default_value' => isset($item['fixed_width']) ? $item['fixed_width'] : 0,
-    '#attributes' => array('class' => array('fontawesome-fixed-width','faf-watch')),
-  );
-
-  $fa_fields['border'] = array(
-    '#title' => t('Add Border'),
-    '#type' => 'checkbox',
-    '#default_value' => isset($item['border']) ? $item['border'] : 0,
-    '#attributes' => array('class' => array('fontawesome-border','faf-watch')),
-  );
-
-  $fa_fields['spinning'] = array(
-    '#title' => t('Spin Icon'),
-    '#type' => 'checkbox',
-    '#default_value' => isset($item['spinning']) ? $item['spinning'] : 0,
-    '#attributes' => array('class' => array('fontawesome-spinning','faf-watch')),
-  );
-
-  $fa_fields['rotation'] = array(
-    '#title' => t('Rotate Icon'),
-    '#type' => 'select',
-    '#default_value' => isset($item['rotation']) ? $item['rotation'] : null,
-    '#options' => fontawesome_field_get_option_list('modifiers','rotate'),
-    '#attributes' => array('class' => array('fontawesome-rotation','faf-watch')),
-  );
-
-  $fa_fields['flip'] = array(
-    '#title' => t('Flip Icon'),
-    '#type' => 'fieldset',
-    '#process' => $process_hack,
-  );
-
-  $fa_fields['flip']['flip_horizontal'] = array(
-    '#title' => t('Horizontally'),
-    '#type' => 'checkbox',
-    '#default_value' => isset($item['flip_horizontal']) ? $item['flip_horizontal'] : 0,
-    '#attributes' => array('class' => array('fontawesome-flip-horizontal','faf-watch')),
-  );
-
-  $fa_fields['flip']['flip_vertical'] = array(
-    '#title' => t('Vertically'),
-    '#type' => 'checkbox',
-    '#default_value' => isset($item['flip_vertical']) ? $item['flip_vertical'] : 0,
-    '#attributes' => array('class' => array('fontawesome-flip-vertical','faf-watch')),
-  );
-
-  // add the #states to each field except the icon choosing field
-  foreach($fa_fields as $k => &$v) {
-    if($k != 'icon') {
-      $v['#states'] = array(
-        'invisible' => array(
-          '#' . $field_id . ' select.fontawesome-icon' => array('value' => '0'),
-        ),
-      );
-    }
+    default:
   }
-
-  // dump the fiels inside containers, add the process hack
-  foreach($containers as $idx => $fields) {
-    $key = 'container-' . $idx;
-    $element['wrapper'][$key] = array(
-      '#prefix' => '<div class="container">',
-      '#suffix' => '</div>',
-      '#process' => $process_hack,
-    );
-
-    foreach($fields as $field_name) {
-      $element['wrapper'][$key][$field_name] = $fa_fields[$field_name];
-    }
-  }
-
-  $element['#attached']['css'][] = drupal_get_path('module','fontawesome_field') . '/fontawesome_field.admin.css';
-  $element['#attached']['js'][] = drupal_get_path('module','fontawesome_field') . '/fontawesome_field.admin.js';
-
-  // last but not least, let's see if we can use select2
-  $select2 = libraries_load('select2');
-  if($select2['loaded']) {
-    $element['#attached']['js'][] = drupal_get_path('module','fontawesome_field') . '/fontawesome_field.select2.js';
-  }
-
-  return $element;
 }
 
-
-/**
- * @param $form
- * @param $form_state
- * @param $complete
- * @return mixed
- */
-function fontawesome_field_ignore_parent(&$form, &$form_state, $complete) {
-  if(isset($form['#parents'])) {
-    array_pop($form['#parents']);
-  }
-
-  return $form;
-}
-
-
-/**
- * implemenation of hook_formatter_info()
- * @return array
- */
-function fontawesome_field_field_formatter_info() {
-  return array (
-    'fontawesome_field_formatter' => array (
-      'label' => t('Default Font Awesome field formatter'),
-      'field types' => array ('fontawesome_field'),
-    ),
-  );
-}
-
-
-/**
- * implementation of hook_field_formatter_view().
- */
-function fontawesome_field_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
-  $element = array();
-  switch ($display['type']) {
-    case 'fontawesome_field_formatter':
-      foreach ($items as $delta => $item) {
-        $element[$delta]['#markup'] = fontawesome_field_render($item);
-      }
-      break;
-  }
-  return $element;
-}
-
-
-/**
- * renders out a field.  called by the render function and can also be called from other modules to render out a field based on the vlaues
- * @param $item
- * @return string
- */
-function fontawesome_field_render($item) {
-  $classes = array('fa');
-  $classes[] = $item['icon'];
-  if($item['size']) { $classes[] = $item['size']; }
-  if($item['rotation']) { $classes[] = $item['rotation']; }
-
-  // booleans
-  $bools = array(
-    'fixed_width' => 'fa-fw',
-    'border'      => 'fa-border',
-    'invert'      => 'fa-inverse',
-    'spinning'    => 'fa-spin',
-    'flip_horizontal' => 'fa-flip-horizontal',
-    'flip_vertical' => 'fa-flip-vertical'
-  );
-
-  foreach($bools as $field => $class) {
-    if($item[$field]) {
-      $classes[] = $class;
-    }
-  }
-
-  return '<i class="' . implode(" ", $classes) . '"></i>';
-}
 
 /**
  * @param $type
@@ -282,53 +50,6 @@ function fontawesome_field_get_option_list($type, $subset = null) {
   //dpm($options);
   return $options;
 }
-
-
-/**
- * Implements hook_field_is_empty().
- */
-function fontawesome_field_field_is_empty($item, $field) {
-  if (empty($item['icon'])) {
-    return true;
-  }
-}
-
-
-/**
- * @return array
- */
-function _fontawesome_field_audit() {
-  $path = libraries_get_path('fontawesome') . '/css/font-awesome.css';
-  $css = file_get_contents($path);
-
-  $matches = array();
-  $pattern = "/\.(fa-[\w-]+)/";
-  preg_match_all($pattern, $css, $matches);
-  $raw = drupal_map_assoc(array_unique($matches[1]));
-
-  // parse the options list into option selects and all that
-  $icons = array();
-  $sets = fontawesome_field_known_sets();
-  foreach($sets['icons'] as $label => $set) {
-    foreach($set as $icon) {
-      $icons[$label][$icon] = $icon;
-      unset($raw[$icon]);
-    }
-  }
-
-  foreach($sets as $group) {
-    foreach($group as $subset) {
-      foreach($subset as $icon) {
-        unset($raw[$icon]);
-      }
-    }
-  }
-
-  dpm($raw);
-
-  return $icons;
-}
-
 
 /**
  * @param null $type
@@ -989,49 +710,6 @@ function fontawesome_field_known_sets($type = null, $subset = null) {
     'fa-stethoscope',
     'fa-user-md',
     'fa-wheelchair',
-  );
-
-  $sets['modifiers']['borders'] = array(
-    'fa-border',
-  );
-
-  $sets['modifiers']['movement'] = array(
-    'fa-spin',
-  );
-
-  $sets['modifiers']['size'] = array(
-    'fa-lg',
-    'fa-2x',
-    'fa-3x',
-    'fa-4x',
-    'fa-5x',
-  );
-
-  $sets['modifiers']['rotate'] = array(
-    'fa-rotate-90',
-    'fa-rotate-180',
-    'fa-rotate-270',
-  );
-
-  $sets['modifiers']['flip'] = array(
-    'fa-flip-horizontal',
-    'fa-flip-vertical',
-  );
-
-  $sets['modifiers']['invert'] = array(
-    'fa-inverse',
-  );
-
-  $sets['modifiers']['stack'] = array(
-    'fa-stack',
-    'fa-stack-1x',
-    'fa-stack-2x',
-  );
-
-  $sets['modifiers']['misc'] = array(
-    'fa-fw', // fixed width
-    'fa-ul', // lists
-    'fa-li', // lists
   );
 
   if($type && $subset) {
