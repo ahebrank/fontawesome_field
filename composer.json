@@ -1,6 +1,5 @@
 {
   "name": "ahebrank/fontawesome_field",
   "type": "drupal-module",
-  "description": "Icon picker field for Fontawesome",
-  "keywords": ["Drupal"],
+  "description": "Icon picker field for Fontawesome"
 }
