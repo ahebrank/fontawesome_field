@@ -2,7 +2,7 @@ fontawesome:
   version: VERSION
   css:
     theme:
-      https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css: { type: external, minified: true }
+      https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css: { type: external, minified: true }
 
 admin:
   version: VERSION
