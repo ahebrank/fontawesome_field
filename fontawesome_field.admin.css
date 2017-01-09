@@ -1,7 +1,19 @@
+@import url(https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css);
+
 .font-awesome-field-admin-wrapper {
-  overflow: hidden;
   border: solid 1px #CCC;
   padding: 12px;
+}
+
+.font-awesome-field-admin-wrapper::before,
+.font-awesome-field-admin-wrapper::after
+{
+  content: "";
+  display: table;
+}
+
+.font-awesome-field-admin-wrapper::after {
+  clear: both;
 }
 
 .font-awesome-field-admin-wrapper fieldset {
@@ -46,4 +58,12 @@
 
 .field-type-fontawesome-field .fontawesome-icon-preview.inverted {
   background-color: #000;
+}
+
+.field-type-fontawesome-field .chosen-container {
+  position: absolute;
+}
+
+.field-type-fontawesome-field .fontawesome-icon-preview .fa {
+  font-size: 18px;
 }

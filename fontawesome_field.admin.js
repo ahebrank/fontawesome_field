@@ -5,7 +5,7 @@
 
       function renderPreview(wrapperId) {
         var $wrapper = $('#' + wrapperId);
-        var $i = $('<i class="fa"></i>')
+        var $i = $('<i class="fa"></i>');
 
         // update the selected icon
         var iconSelection = $wrapper.find('select.fontawesome-icon').val();
@@ -35,7 +35,7 @@
         };
 
         $.each(boolBoxes, function(stub,  cssClass) {
-          var isChecked = $wrapper.find('.fontawesome-' + stub).prop('checked');
+          var isChecked = $wrapper.find('.fontawesome-' + stub).attr('checked');
           if(isChecked) { $i.addClass(cssClass); }
 
           if(stub == 'invert') {
@@ -61,7 +61,7 @@
       $('.faf-watch').change(function() {
           var wrapperId = $(this).parents('.font-awesome-field-admin-wrapper').attr('id');
           renderPreview(wrapperId);
-        });
+      });
 
     }
   };
