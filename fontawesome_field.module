@@ -6,7 +6,7 @@
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
-use Symfony\Yaml\Yaml;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Implements hook_help().
